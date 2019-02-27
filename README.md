@@ -8,7 +8,7 @@ Contém dados dos usuários do sistema de um banco. Cada linha representa um usu
 - conta.mxm
 	Contém os relacionamentos entre os usuários do sistema e suas contas-correntes. Cada usuário contido no arquivo “pessoa.mxm” pode ter de 1 a N contas. Cada linha representa o relacionamento entre um usuário e uma conta. Os valores em cada linha estão separados pelo caractere "|", sendo o primeiro valor correspondente ao código da conta e o segundo ao código do usuário (mesmo código existente no arquivo “pessoa.mxm”).
 
--lancamento.mxm
+- lancamento.mxm
 	Contém lançamentos de valores feitos em contas-correntes. Cada conta corrente contida no arquivo “conta.mxm” pode ter de 0 a N lançamentos. Cada linha representa um lançamento feito na conta. Os valores em cada linha estão separados pelo caractere "|", sendo o primeiro valor correspondente ao código da conta e o segundo ao valor do lançamento, que pode ser positivo ou negativo.
 Pede-se:
 
