@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Text;
 
@@ -8,39 +9,39 @@ namespace PessoasContasLancamentos
     {
         static void Main(string[] args)
         {
-            Usuario funcionario = new Usuario
+            var funcionario = new Usuario
             {
                 Contas = new List<int>(),
                 Lancamentos = new List<double>()
             };
 
-            using (StreamReader sr1 = new StreamReader("pessoa.mxm", Encoding.UTF7))
-                while (!sr1.EndOfStream)
+            using (var pessoaStringReader = new StreamReader("pessoa.mxm", Encoding.UTF7))
+                while (!pessoaStringReader.EndOfStream)
                 {
-                    string[] stringAux = sr1.ReadLine().Split('|');
-                    funcionario.Codigo = int.Parse(stringAux[0]);
-                    funcionario.Nome = stringAux[1];
+                    var linhaDeDado = pessoaStringReader.ReadLine().Split('|');
+                    funcionario.Codigo = int.Parse(linhaDeDado[0]);
+                    funcionario.Nome = linhaDeDado[1];
 
-                    using (StreamReader sr2 = new StreamReader("conta.mxm"))
-                        while (!sr2.EndOfStream)
+                    using (var contaStringReader = new StreamReader("conta.mxm"))
+                        while (!contaStringReader.EndOfStream)
                         {
-                            stringAux = sr2.ReadLine().Split('|');
-                            int contaAux = int.Parse(stringAux[0]);
-                            int codigoAux = int.Parse(stringAux[1]);
+                            linhaDeDado = contaStringReader.ReadLine().Split('|');
+                            var numeroConta = int.Parse(linhaDeDado[0]);
+                            var numeroPessoa = int.Parse(linhaDeDado[1]);
 
-                            if (codigoAux == funcionario.Codigo)
+                            if (numeroPessoa == funcionario.Codigo)
                             {
-                                funcionario.Contas.Add(contaAux);
+                                funcionario.Contas.Add(numeroConta);
 
-                                using (StreamReader sr3 = new StreamReader("lancamento.mxm"))
-                                    while (!sr3.EndOfStream)
+                                using (var lancamentoStringReader = new StreamReader("lancamento.mxm"))
+                                    while (!lancamentoStringReader.EndOfStream)
                                     {
-                                        stringAux = sr3.ReadLine().Split('|');
-                                        int contaAuxLancamento = int.Parse(stringAux[0]);
+                                        linhaDeDado = lancamentoStringReader.ReadLine().Split('|');
+                                        var numeroLancamento = int.Parse(linhaDeDado[0]);
 
-                                        if (contaAuxLancamento == contaAux)
+                                        if (numeroLancamento == numeroConta)
                                         {
-                                            double valorLancamento = double.Parse(stringAux[1], CultureInfo.InvariantCulture);
+                                            var valorLancamento = double.Parse(linhaDeDado[1], CultureInfo.InvariantCulture);
                                             funcionario.Transacao(valorLancamento);
                                         }
                                     }
@@ -49,13 +50,13 @@ namespace PessoasContasLancamentos
 
                     if (funcionario.Saldo < 0)
                     {
-                        using (StreamWriter srDev = File.AppendText("devedores.mxm"))
-                            srDev.WriteLine(funcionario.Nome + "," + funcionario.Saldo.ToString("F2", CultureInfo.InvariantCulture));
+                        using (var devedoresStringWriter = File.AppendText("devedores.mxm"))
+                            devedoresStringWriter.WriteLine(funcionario.Nome + "," + funcionario.Saldo.ToString("F2", CultureInfo.InvariantCulture));
                     }
                     else if (funcionario.Media > 1000.0)
                     {
-                        using (StreamWriter swBon = File.AppendText("bonus.mxm"))
-                            swBon.WriteLine(funcionario.Nome + "," + (funcionario.Media).ToString("F2", CultureInfo.InvariantCulture));
+                        using (var bonusStringWriter = File.AppendText("bonus.mxm"))
+                            bonusStringWriter.WriteLine(funcionario.Nome + "," + (funcionario.Media).ToString("F2", CultureInfo.InvariantCulture));
                     }
                 }
         }
